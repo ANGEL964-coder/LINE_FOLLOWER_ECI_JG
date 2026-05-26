@@ -21,6 +21,7 @@ module tt_um_line_follower (
     // PWM
     pwm pwm_signal (
         .clk         (clk),
+        .rst_n       (rst_n),
         .Q_motor_der (signal_Q_motor_der),
         .Q_motor_izq (signal_Q_motor_izq),
         .error       (error)
@@ -76,8 +77,10 @@ module tt_um_line_follower (
     end
 
     // aux
-    always @(posedge clk) begin
-        if (error < 0)
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n)
+            aux <= 1'b0;
+        else if (error < 0)
             aux <= 1'b0;
         else
             aux <= 1'b1;
